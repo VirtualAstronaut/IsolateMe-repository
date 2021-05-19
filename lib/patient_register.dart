@@ -1,31 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'main.dart';
-class AddWardInfo extends StatefulWidget {
+
+class PatientRegister extends StatefulWidget {
   @override
-  _AddWardInfoState createState() => _AddWardInfoState();
+  _PatientRegisterState createState() => _PatientRegisterState();
 }
 
-class _AddWardInfoState extends State<AddWardInfo> {
-  final noOfBeds = TextEditingController();
-  int countOfBeds = 0;
-
-  final TextEditingController availableBeds = TextEditingController();
-  final TextEditingController totalBeds = TextEditingController();
-  final TextEditingController oxygenBeds = TextEditingController();
-  final TextEditingController nameOfOrg = TextEditingController();
-  final TextEditingController availableVentilators = TextEditingController();
-  final TextEditingController availableOxygenBeds = TextEditingController();
+class _PatientRegisterState extends State<PatientRegister> {
+  final TextEditingController fullName = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController mobileNo = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final TextEditingController city = TextEditingController();
+  // final TextEditingController dateOfBirth = TextEditingController();
   final TextEditingController ventilatorBeds = TextEditingController();
+  bool isCoronaPositive = false;
+  String dateOfBirth = "";
 
-  // List<TextEditingController> controllers  = List.generate(7, (index) => TextEditingController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:   Text(
-          "Enter Covid Center Info",
-          style: const TextStyle(color: Colors.white, ),
+        title: Text(
+          "Patient Register",
+          style: const TextStyle(
+            color: Colors.white,
+          ),
         ),
         shadowColor: Colors.transparent,
         backgroundColor: Colors.deepPurpleAccent,
@@ -47,8 +48,8 @@ class _AddWardInfoState extends State<AddWardInfo> {
           padding: EdgeInsets.only(top: 30),
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                tileMode: TileMode.clamp,
-                  stops: [.2,.2],
+                  tileMode: TileMode.clamp,
+                  stops: [.2, .2],
                   colors: [Colors.deepPurpleAccent, Colors.white],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
@@ -80,80 +81,99 @@ class _AddWardInfoState extends State<AddWardInfo> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextFormField(
-                        controller: nameOfOrg,
+                        controller: fullName,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.house_sharp),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            labelText: "Name of Organizations"),
+                            labelText: "Name of Patient"),
                       ),
                       SizedBox(
                         height: 15,
                       ),
                       TextFormField(
-                        controller: totalBeds,
+                        controller: email,
                         decoration: InputDecoration(
                             prefixIcon: Icon(Icons.single_bed_outlined),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            labelText: "Number of Total Beds"),
+                            labelText: "Email"),
                       ),
                       SizedBox(
                         height: 15,
                       ),
 
                       TextFormField(
-                        controller: ventilatorBeds,
+                        controller: mobileNo,
                         decoration: InputDecoration(
-                            prefixIcon:
-                                Icon(Icons.airline_seat_individual_suite),
+                            prefixIcon: Icon(Icons.mobile_friendly),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            labelText: "Number of Ventilator Beds"),
+                            labelText: "Mobile Number"),
                       ),
                       SizedBox(
                         height: 15,
                       ),
                       TextFormField(
-                        controller: oxygenBeds,
+                        obscureText: true,
+                        controller: password,
                         decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.camera),
+                            prefixIcon: Icon(Icons.remove_red_eye),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            labelText: "Number of Oxygen Beds"),
+                            labelText: "Password"),
                       ),
                       SizedBox(
                         height: 15,
                       ),
                       TextFormField(
-                        controller: availableVentilators,
+                        controller: city,
                         decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.camera),
+                            prefixIcon: Icon(Icons.location_city),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            labelText: "Available Ventilators"),
+                            labelText: "City"),
                       ),
-                      SizedBox(
-                        height: 15,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text('Date Of Birth'),
+                          OutlinedButton.icon(
+                              onPressed: () async {
+                                DateTime dateOfBirthDateTime = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime(2002),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2002));
+                                if (dateOfBirthDateTime != null)
+                                setState(() {
+                                  dateOfBirth = dateOfBirthDateTime.toString().substring(0,10);
+                                });
+                              },
+                              icon: Icon(Icons.date_range),
+                              label: Text( dateOfBirth == "" ? 'Pick Date' : 'Picked Date\n${dateOfBirth.toString().substring(0,10)}'  ))
+                        ],
                       ),
-                      TextFormField(
-                        controller: availableBeds,
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.single_bed_outlined),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: "Available Beds"),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      TextFormField(
-                        controller: availableOxygenBeds,
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.single_bed_outlined),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: "Available Oxygen Beds"),
+
+                          Text('Are you diagnosed with Corona Positive ?'),
+                      Row(
+mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: [
+                        Text('Yes'),
+                          Radio(value: true, groupValue: isCoronaPositive, onChanged: (val) {
+                            setState(() {
+                              isCoronaPositive = val;
+                            });
+                          }),
+
+                          Text('No'),
+                          Radio(value: false, groupValue: isCoronaPositive, onChanged: (val) {
+                            setState(() {
+                              isCoronaPositive = val;
+                            });
+                          }),
+                        ],
                       ),
                       // TextFormField(
                       //   controller: noOfBeds,
@@ -177,19 +197,19 @@ class _AddWardInfoState extends State<AddWardInfo> {
                                     borderRadius: BorderRadius.circular(5)))),
                         icon: Icon(Icons.save),
                         onPressed: () async {
-                          await firebaseFirestore.collection("wards").add({
-                            "available_beds": availableBeds.text,
-                            "available_oxygen_beds": availableOxygenBeds.text,
-                            "available_ventilators": availableVentilators.text,
-                            "org_name": nameOfOrg.text,
-                            "oxygen_beds": oxygenBeds.text,
-                            "total_beds": totalBeds.text,
-                            "ventilator_beds": ventilatorBeds.text
+                          await firebaseFirestore.collection("patients").add({
+                          "full_name" : fullName.text,
+                            "city" : city.text,
+                            "date_of_birth" : dateOfBirth,
+                            "email" : email.text,
+                            "is_corona_positive" : isCoronaPositive,
+                            "mobile_number" :mobileNo.text,
+                            "password" :password.text
                           });
                           ScaffoldMessenger.of(context)
                               .showSnackBar(SnackBar(content: Text('Saved!')));
                         },
-                        label: Text('Add'),
+                        label: Text('Register'),
                       ),
                     ],
                   ),
