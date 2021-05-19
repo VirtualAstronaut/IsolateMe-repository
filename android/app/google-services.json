@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "772255020826",
+    "project_id": "covisolate-968cb",
+    "storage_bucket": "covisolate-968cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772255020826:android:756990731005ba58cddea3",
+        "android_client_info": {
+          "package_name": "com.pramadigital.covisolate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "772255020826-srabipaeecnchd4ekcl4v808oe7plvl8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcAH0sNZ-CMwtoOGYBT6_-EEJex0QQvSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "772255020826-srabipaeecnchd4ekcl4v808oe7plvl8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
