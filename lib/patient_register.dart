@@ -206,8 +206,7 @@ mainAxisAlignment: MainAxisAlignment.center,
                             "mobile_number" :mobileNo.text,
                             "password" :password.text
                           });
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('Saved!')));
+
                         },
                         label: Text('Register'),
                       ),

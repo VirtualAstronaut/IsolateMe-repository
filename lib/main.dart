@@ -1,4 +1,5 @@
 import 'package:covisolate0/AddWardInfo.dart';
+import 'package:covisolate0/homepage.dart';
 import 'package:covisolate0/patient_register.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: PatientRegister(),
+      home: HomeScreen(),
     );
   }
 }
