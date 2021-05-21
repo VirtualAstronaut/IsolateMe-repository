@@ -1,3 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:covisolate0/AddWardInfo.dart';
+import 'package:covisolate0/homepage.dart';
+import 'package:covisolate0/main.dart';
+import 'package:covisolate0/patient_register.dart';
+import 'package:covisolate0/wardinfoscreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -6,18 +13,159 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final mobileNumber = TextEditingController();
+  final password = TextEditingController();
+
+  bool isCovidLogin = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Center(child: Card(
-            child:
-            Column(
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              tileMode: TileMode.mirror,
+              colors: [Colors.deepPurpleAccent, Colors.deepPurple.shade400],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [0, 1])),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * .5,
+              width: MediaQuery.of(context).size.width * .9,
+              child: Card(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'Login',
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                    Divider(
+                      indent: 40,
+                      endIndent: 40,
+                      color: Colors.deepPurpleAccent,
+                      thickness: 3,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * .7,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: mobileNumber,
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.phone),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                labelText: "Mobile Number"),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: password,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.remove_red_eye),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                labelText: "Mobile Number"),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Covid Center Login?',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              Checkbox(
+                                  value: isCovidLogin,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      isCovidLogin = val;
+                                    });
+                                  })
+                            ],
+                          ),
+                          OutlinedButton.icon(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white)),
+                              onPressed: () async {
+                                if (!isCovidLogin) {
+                                  QuerySnapshot querySnapshot =
+                                      await firebaseFirestore
+                                          .collection("patients")
+                                          .where("mobile_number",
+                                              isEqualTo: mobileNumber.text)
+                                          .where("password",
+                                              isEqualTo: password.text)
+                                          .get();
+                                  if (querySnapshot.docs.isEmpty) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text("Wrong Password"),
+                                          actions: [
+                                            OutlinedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.white)),
+                                                onPressed: () async {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Ok'))
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => HomeScreen(
+                                                querySnapshot
+                                                    .docs.first["city"],mobileNumber.text)));
+                                  }
+                                }
+                              },
+                              icon: Icon(Icons.login),
+                              label: Text(
+                                  'Login as ${isCovidLogin ? 'Covid Center' : 'Patient'}')),
+                          OutlinedButton.icon(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white)),
+                              onPressed: () async {
 
+                                  Navigator.push(context, MaterialPageRoute(builder: (_)  =>
+                                  isCovidLogin ? AddWardInfo() : PatientRegister()
+                                  ));
+
+
+                              },
+                              icon: Icon(Icons.app_registration),
+                              label: Text(
+                                  'Register as ${isCovidLogin ? 'Covid Center' : 'Patient'}'))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ))
-        ],
+          ),
+        ),
       ),
     );
   }

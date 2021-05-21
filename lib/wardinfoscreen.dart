@@ -1,5 +1,6 @@
 import 'package:covisolate0/main.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 class WardInfoScreen extends StatelessWidget {
   final String availableBeds;
   final String totalBeds;
@@ -156,6 +157,8 @@ class WardInfoScreen extends StatelessWidget {
                       backgroundColor: MaterialStateProperty.all(Colors.white)
                     ),
                       onPressed: () async {
+                      if(await canLaunch("tel:$mobileNumber"))
+                        await launch("tel:$mobileNumber");
                       },
                       icon: Icon(Icons.phone),
                       label: Text( 'Call')),

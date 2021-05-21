@@ -4,25 +4,30 @@ import 'package:covisolate0/wardinfoscreen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  final String city;
+  final String mobileNumber;
+  HomeScreen(this.city, this.mobileNumber);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<QuerySnapshot> getData() {
+    print(widget.city);
     if (!isCurrentCity)
       return firebaseFirestore.collection("wards").get();
     else
       return firebaseFirestore
           .collection("wards")
-          .where('city', isEqualTo: "Rajkot")
+          .where('city', isEqualTo: widget.city)
           .get();
   }
 
   static const TextStyle infoSTyle = TextStyle(
     fontSize: 18,
   );
-  bool isCurrentCity = false;
+  bool isCurrentCity = true;
   @override
   Widget build(BuildContext context) {
     final screenDims = MediaQuery.of(context).size;
