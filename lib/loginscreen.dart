@@ -3,6 +3,7 @@ import 'package:covisolate0/AddWardInfo.dart';
 import 'package:covisolate0/homepage.dart';
 import 'package:covisolate0/main.dart';
 import 'package:covisolate0/patient_register.dart';
+import 'package:covisolate0/ward_homepage.dart';
 import 'package:covisolate0/wardinfoscreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 prefixIcon: Icon(Icons.remove_red_eye),
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(15)),
-                                labelText: "Mobile Number"),
+                                labelText: "Password"),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -100,10 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   backgroundColor:
                                       MaterialStateProperty.all(Colors.white)),
                               onPressed: () async {
-                                if (!isCovidLogin) {
+
                                   QuerySnapshot querySnapshot =
                                       await firebaseFirestore
-                                          .collection("patients")
+                                          .collection(isCovidLogin ? "wards" : "patients")
                                           .where("mobile_number",
                                               isEqualTo: mobileNumber.text)
                                           .where("password",
@@ -130,14 +131,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                       },
                                     );
                                   } else {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) => HomeScreen(
+                                            builder: (_) => isCovidLogin ? WardHomePage(querySnapshot
+                                                .docs.first["docId"]) :HomeScreen(
                                                 querySnapshot
-                                                    .docs.first["city"],mobileNumber.text)));
+                                                    .docs.first["city"],querySnapshot
+                                                .docs.first["docId"]))
+
+                                    );
                                   }
-                                }
+                                
                               },
                               icon: Icon(Icons.login),
                               label: Text(

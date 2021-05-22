@@ -40,6 +40,7 @@ class _AddWardInfoState extends State<AddWardInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         title: Text(
           "Enter Covid Center Info",
           style: const TextStyle(
@@ -353,7 +354,9 @@ class _AddWardInfoState extends State<AddWardInfo> {
                                       }),
                                 ],
                               ),
-                              const SizedBox(height: 20,),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               ElevatedButton.icon(
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
@@ -366,13 +369,15 @@ class _AddWardInfoState extends State<AddWardInfo> {
                                                 BorderRadius.circular(5)))),
                                 icon: Icon(Icons.save),
                                 onPressed: () async {
-                                  await firebaseFirestore
+                                  DocumentReference docRef = firebaseFirestore
                                       .collection("wards")
-                                      .add({
-                                    "address" :address.text,
-                                    "director_name" :directorName.text,
+                                      .doc();
+                                  await docRef.set({
+                                    "docId": docRef.id,
+                                    "address": address.text,
+                                    "director_name": directorName.text,
                                     "mobile_number": mobileNumber.text,
-                                    "email" : email.text,
+                                    "email": email.text,
                                     "password": password.text,
                                     "city": city.text,
                                     "available_beds": availableBeds.text,
@@ -383,11 +388,12 @@ class _AddWardInfoState extends State<AddWardInfo> {
                                     "org_name": nameOfOrg.text,
                                     "oxygen_beds": oxygenBeds.text,
                                     "total_beds": totalBeds.text,
-                                    "type" : isWardGovernment ? "Government" : "Private",
-                                    "ventilator_beds": ventilatorBeds.text
+                                    "type": isWardGovernment
+                                        ? "Government"
+                                        : "Private",
+                                    "ventilator_beds": ventilatorBeds.text,
+                                    "requests": []
                                   });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Saved!')));
                                 },
                                 label: Text('Add'),
                               ),

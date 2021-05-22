@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covisolate0/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,6 +47,7 @@ class _PatientRegisterState extends State<PatientRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         title: Text(
           "Patient Register",
           style: const TextStyle(
@@ -303,7 +305,12 @@ class _PatientRegisterState extends State<PatientRegister> {
                           });
                           String adhaarUrl = await uploadAdhaar();
                           String rtpcrUrl = await uploadRTPCR();
-                          await firebaseFirestore.collection("patients").add({
+                          DocumentReference docRef =
+                          firebaseFirestore
+                              .collection("patients")
+                              .doc();
+                          await docRef.set({
+                            "docId" : docRef.id,
                             "full_name": fullName.text,
                             "city": city.text,
                             "adhaar_image_url" :  adhaarUrl,
@@ -318,7 +325,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                           setState(() {
                             isUploading = false;
                           });
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text,mobileNo.text)));
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text,docRef.id)));
                         },
                         label: Row(
                           children: [

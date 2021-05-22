@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covisolate0/main.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-class WardInfoScreen extends StatelessWidget {
+
+class WardInfoScreen extends StatefulWidget {
   final String availableBeds;
   final String totalBeds;
+  final String docId;
   final String availableOxygenBeds;
   final String ventilatorBeds;
   final String availableVentilators;
@@ -14,29 +17,38 @@ class WardInfoScreen extends StatelessWidget {
   final String mobileNumber;
   final String oxygenBeds;
   final String city;
+  final String patientDocId;
+  WardInfoScreen(
+      {this.availableBeds,
+      this.totalBeds,
+      this.availableOxygenBeds,
+      this.ventilatorBeds,
+      this.availableVentilators,
+      this.type,
+      this.orgName,
+      this.address,
+      this.mobileNumber,
+      this.oxygenBeds,
+      this.city,
+      this.availableVentilatorBeds,
+      this.docId,
+      this.patientDocId});
 
-  WardInfoScreen({
-    this.availableBeds,
-    this.totalBeds,
-    this.availableOxygenBeds,
-    this.ventilatorBeds,
-    this.availableVentilators,
-    this.type,
-    this.orgName,
-    this.address,
-    this.mobileNumber,
-    this.oxygenBeds,
-    this.city, this.availableVentilatorBeds});
+  static const TextStyle infoSTyle =
+      TextStyle(fontSize: 18, color: Colors.white);
 
-  static const TextStyle infoSTyle = TextStyle(
-      fontSize: 18,
-      color: Colors.white
-  );
+  @override
+  _WardInfoScreenState createState() => _WardInfoScreenState();
+}
+
+class _WardInfoScreenState extends State<WardInfoScreen> {
+  bool isApplied =false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.light,
         title: Text(
           "Ward Details",
           style: const TextStyle(
@@ -55,123 +67,199 @@ class WardInfoScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(orgName,style: const TextStyle(fontSize: 25,color: Colors.white),),
-              Divider(color: Colors.white,thickness: 3,),
-           SizedBox(height: 10,),
-           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: [
-               Text('Address : ',style: infoSTyle,),
-               Text(address,style:infoSTyle),
-             ],
-           ),
-
-              Divider(color: Colors.white,),
+              Text(
+                widget.orgName,
+                style: const TextStyle(fontSize: 25, color: Colors.white),
+              ),
+              Divider(
+                color: Colors.white,
+                thickness: 3,
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('City : ',style: infoSTyle,),
-                  Text(city,style:infoSTyle),
+                  Text(
+                    'Address : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.address, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Type: ',style: infoSTyle,),
-                  Text(type,style:infoSTyle),
+                  Text(
+                    'City : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.city, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Mobile Number : ',style: infoSTyle,),
-                  Text(mobileNumber,style:infoSTyle),
+                  Text(
+                    'Type: ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.type, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Oxygen Beds : ',style: infoSTyle,),
-                  Text(oxygenBeds,style:infoSTyle),
+                  Text(
+                    'Mobile Number : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.mobileNumber, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Ventilator Beds : ',style: infoSTyle,),
-                  Text(ventilatorBeds,style:infoSTyle),
+                  Text(
+                    'Oxygen Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.oxygenBeds, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total Beds : ',style: infoSTyle,),
-                  Text(totalBeds,style:infoSTyle),
+                  Text(
+                    'Ventilator Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.ventilatorBeds, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Available Oxygen Beds : ',style: infoSTyle,),
-                  Text(availableOxygenBeds,style:infoSTyle),
+                  Text(
+                    'Total Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.totalBeds, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Available Beds : ',style: infoSTyle,),
-                  Text(availableBeds,style:infoSTyle),
+                  Text(
+                    'Available Oxygen Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.availableOxygenBeds, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Available Ventilators : ',style: infoSTyle,),
-                  Text(availableVentilators,style:infoSTyle),
+                  Text(
+                    'Available Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.availableBeds, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-              Divider(color: Colors.white,),
+              Divider(
+                color: Colors.white,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Available Ventilator Beds : ',style: infoSTyle,),
-                  Text(availableVentilatorBeds,style:infoSTyle),
+                  Text(
+                    'Available Ventilators : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.availableVentilators, style: WardInfoScreen.infoSTyle),
                 ],
               ),
-
-
-              SizedBox(height: 20,),
+              Divider(
+                color: Colors.white,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Available Ventilator Beds : ',
+                    style: WardInfoScreen.infoSTyle,
+                  ),
+                  Text(widget.availableVentilatorBeds, style: WardInfoScreen.infoSTyle),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton.icon(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.white)
-                    ),
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white)),
                       onPressed: () async {
-                      if(await canLaunch("tel:$mobileNumber"))
-                        await launch("tel:$mobileNumber");
+                        if (await canLaunch("tel:${widget.mobileNumber}"))
+                          await launch("tel:${widget.mobileNumber}");
                       },
                       icon: Icon(Icons.phone),
-                      label: Text( 'Call')),
-                  SizedBox(width: 25,),
+                      label: Text('Call')),
+                  SizedBox(
+                    width: 25,
+                  ),
                   OutlinedButton.icon(
                       style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.white)
-                      ),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.white)),
                       onPressed: () async {
-
+                        QuerySnapshot querySnap = await firebaseFirestore
+                            .collection("patients")
+                            .where("docId", isEqualTo: widget.patientDocId)
+                            .get();
+                        print(widget.patientDocId);
+                        firebaseFirestore
+                            .collection("wards")
+                            .doc(widget.docId)
+                            .update({
+                          "requests": FieldValue.arrayUnion(
+                              [querySnap.docs.first.data()])
+                        });
+                        setState(() {
+                          isApplied = true;
+                        });
                       },
-                      icon: Icon(Icons.app_registration),
-                      label: Text( 'Register'))
+                      icon: Icon(isApplied ? Icons.check : Icons.app_registration),
+                      label: Text(isApplied ? 'Applied' : 'Apply'))
                 ],
               ),
             ],
