@@ -1,8 +1,6 @@
-import 'package:covisolate0/AddWardInfo.dart';
-import 'package:covisolate0/homepage.dart';
+
 import 'package:covisolate0/loginscreen.dart';
-import 'package:covisolate0/patient_register.dart';
-import 'package:covisolate0/ward_homepage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';

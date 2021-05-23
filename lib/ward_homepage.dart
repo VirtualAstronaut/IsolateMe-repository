@@ -18,7 +18,7 @@ class _WardHomePageState extends State<WardHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(brightness: Brightness.light,
+      appBar: AppBar(brightness: Brightness.dark,
         actions: [IconButton(tooltip: "Logout",icon: Icon(Icons.logout), onPressed: (){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
         })],
@@ -56,6 +56,7 @@ class _WardHomePageState extends State<WardHomePage> {
                 );
               return ListView.builder(
                   itemCount: snapshot.data.docs.first["requests"].length,
+                  physics: BouncingScrollPhysics(),
                   itemBuilder: (_, index) {
                     return Card(
                       margin:
@@ -115,8 +116,11 @@ class _WardHomePageState extends State<WardHomePage> {
                                 )
                               ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.center,
+runAlignment: WrapAlignment.center,
                               children: [
                                 OutlinedButton(
                                     style: ButtonStyle(
@@ -124,7 +128,7 @@ class _WardHomePageState extends State<WardHomePage> {
                                             MaterialStateProperty.all(
                                                 Colors.white)),
                                     onPressed: () async {
-                                      // print(listOfDocs.first["requests"][index]["adhaar_image_url"]);
+
                                       showDialog(
                                         context: context,
                                         builder: (context) {
@@ -170,6 +174,7 @@ class _WardHomePageState extends State<WardHomePage> {
                                       );
                                     },
                                     child: Text('Adhaar')),
+                                const SizedBox(width: 10,),
                                 OutlinedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -221,6 +226,7 @@ class _WardHomePageState extends State<WardHomePage> {
                                       );
                                     },
                                     child: Text('RTPCR')),
+                                const SizedBox(width: 10,),
                                 OutlinedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -231,7 +237,16 @@ class _WardHomePageState extends State<WardHomePage> {
                                           .collection('patients')
                                           .doc(listOfDocs.first["requests"]
                                               [index]["docId"])
-                                          .update({"isApproved": true});
+                                          .update( {"status" : "Approved, Come With Docs"});
+                                      await firebaseFirestore
+                                          .collection("wards")
+                                          .doc(widget.docId)
+                                          .update({
+                                        "requests": FieldValue.arrayRemove([
+                                          listOfDocs.first["requests"][index]
+                                        ])
+                                      });
+                                      setState(() {});
                                     },
                                     child: Text("Approve")),
                                 OutlinedButton(
@@ -240,9 +255,12 @@ class _WardHomePageState extends State<WardHomePage> {
                                             MaterialStateProperty.all(
                                                 Colors.white)),
                                     onPressed: () async {
+                                      await firebaseFirestore.collection('patients').doc(listOfDocs.first["requests"]
+                                      [index]["docId"]).update(
+                                          {"status" : "Rejected"});
                                       await firebaseFirestore
                                           .collection("wards")
-                                          .doc("hH2F0DsxXxipCtYIgopL")
+                                          .doc(widget.docId)
                                           .update({
                                         "requests": FieldValue.arrayRemove([
                                           listOfDocs.first["requests"][index]

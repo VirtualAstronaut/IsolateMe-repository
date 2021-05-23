@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isApproved = false;
+  String status = "";
 
   @override
   void didChangeDependencies() async {
@@ -40,19 +40,20 @@ class _HomeScreenState extends State<HomeScreen> {
         .where('docId', isEqualTo: widget.docId)
         .get();
     setState(() {
-      isApproved = querySnapshot.docs.first["isApproved"];
+      status = querySnapshot.docs.first["status"];
     });
   }
 
   static const TextStyle infoSTyle = TextStyle(
-    fontSize: 18,
+    fontSize: 16,
   );
   bool isCurrentCity = true;
   @override
   Widget build(BuildContext context) {
     final screenDims = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(brightness: Brightness.light,
+      appBar: AppBar(
+        brightness: Brightness.dark,
         actions: [
           IconButton(
               tooltip: "Logout",
@@ -74,41 +75,49 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(margin: EdgeInsets.only(left: 10),child: Text('${isApproved ? "Approved " : "Not Approved"}',style: const TextStyle(fontSize: 17),)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                      margin: EdgeInsets.only(right: 10),
-                      child: Text(
-                        'Filter by',
-                        style: const TextStyle(fontSize: 17),
-                      )),
-                  DropdownButton(
-                    items: [
-                      DropdownMenuItem(
-                        child: Text('Rajkot'),
-                        value: true,
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Any'),
-                        value: false,
-                      )
-                    ],
-                    value: isCurrentCity,
-                    onChanged: (val) {
-                      setState(() {
-                        isCurrentCity = val;
-                      });
-                    },
-                  )
-                ],
-              ),
-
-            ],
+          Card(
+            child: Wrap (
+              runAlignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.center,
+              children: [
+                Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Status: " + status,
+                      style: const TextStyle(fontSize: 17),
+                    )),
+                Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: Text(
+                          'Filter by',
+                          style: const TextStyle(fontSize: 17),
+                        )),
+                    DropdownButton(
+                      items: [
+                        DropdownMenuItem(
+                          child: Text(widget.city),
+                          value: true,
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Any'),
+                          value: false,
+                        )
+                      ],
+                      value: isCurrentCity,
+                      onChanged: (val) {
+                        setState(() {
+                          isCurrentCity = val;
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
           FutureBuilder<QuerySnapshot>(
             future: getData(),
@@ -121,8 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (_) => WardInfoScreen(
@@ -149,103 +158,91 @@ class _HomeScreenState extends State<HomeScreen> {
                                       totalBeds: snapshot.data.docs[index]["total_beds"],
                                       docId: snapshot.data.docs[index]["docId"],
                                       patientDocId: widget.docId)));
+                          await getStatus();
+                          setState(() {
+                          });
                         },
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                              color: Colors.deepPurpleAccent,
-                            )),
-                            // borderRadius: BorderRadius.only(
-                            //     bottomLeft: Radius.circular(10),
-                            //     bottomRight: Radius.circular(10))
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                width: screenDims.width,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(9),
-                                        topRight: Radius.circular(9)),
-                                    color: Colors.deepPurpleAccent),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      snapshot.data.docs[index]["org_name"],
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                    ),
-                                    Text(
-                                      snapshot.data.docs[index]["city"],
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                    )
-                                  ],
+                        child: Card(
+                          child: Container(
+
+
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10),
+                                  width: screenDims.width,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5)),
+                                      color: Colors.deepPurpleAccent),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        snapshot.data.docs[index]["org_name"],
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
+                                      Text(
+                                        snapshot.data.docs[index]["city"],
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Address : ${snapshot.data.docs[index]["address"]}',
-                                          style: infoSTyle,
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Address : ${snapshot.data.docs[index]["address"]}',
+                                              style: infoSTyle,
+                                              softWrap: true,
+                                            ),
+                                            Text(
+                                              'Type : ${snapshot.data.docs[index]["type"]}',
+                                              style: infoSTyle,
+                                            ),
+                                            Text(
+                                              'Mobile Number : ${snapshot.data.docs[index]["mobile_number"]}',
+                                              style: infoSTyle,
+                                            ),
+
+                                          ],
                                         ),
-                                        Text(
-                                          'Type : ${snapshot.data.docs[index]["type"]}',
-                                          style: infoSTyle,
-                                        ),
-                                        Text(
-                                          'Mobile Number : ${snapshot.data.docs[index]["mobile_number"]}',
-                                          style: infoSTyle,
-                                        ),
-                                        // Text(
-                                        //   'Available Oxygen Beds ${snapshot.data.docs[index]["available_oxygen_beds"]}',
-                                        //   style: infoSTyle,
-                                        // ),
-                                        // Text(
-                                        //   'Available Ventilator Beds ${snapshot.data.docs[index]["ventilator_beds"]}',
-                                        //   style: infoSTyle,
-                                        // ),
-                                        // Text(
-                                        //   'Available Beds ${snapshot.data.docs[index]["available_ventilators"]}',
-                                        //   style: infoSTyle,
-                                        // ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Container(
-                                          height: 25,
-                                          width: 40,
-                                          color: int.parse(
-                                                      snapshot.data.docs[index]
-                                                          ["available_beds"]) ==
-                                                  0
-                                              ? Colors.red
-                                              : Colors.green,
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Container(
+                                            height: 25,
+                                            width: 40,
+                                            color: int.parse(
+                                                        snapshot.data.docs[index]
+                                                            ["available_beds"]) ==
+                                                    0
+                                                ? Colors.red
+                                                : Colors.green,
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );

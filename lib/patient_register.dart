@@ -19,7 +19,7 @@ class _PatientRegisterState extends State<PatientRegister> {
   final TextEditingController mobileNo = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController city = TextEditingController();
-  // final TextEditingController dateOfBirth = TextEditingController();
+
   final TextEditingController ventilatorBeds = TextEditingController();
   bool isCoronaPositive = false;
   String dateOfBirth = "";
@@ -47,7 +47,7 @@ class _PatientRegisterState extends State<PatientRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         title: Text(
           "Patient Register",
           style: const TextStyle(
@@ -58,18 +58,11 @@ class _PatientRegisterState extends State<PatientRegister> {
         backgroundColor: Colors.deepPurpleAccent,
         elevation: 0,
       ),
-      // bottomNavigationBar: BottomAppBar(
-      //   child: Row(
-      //     children: [
-      //       IconButton(icon: Icon(Icons.list), onPressed: () {}),
-      //       Text('Add Ward info'),
-      //     ],
-      //   ),
-      // ),
+
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
-          height: MediaQuery.of(context).size.height,
+
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(top: 30),
           decoration: BoxDecoration(
@@ -80,20 +73,9 @@ class _PatientRegisterState extends State<PatientRegister> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
           child: Column(
+
             children: [
-              // Row(
-              //   children: [
-              //     Icon(
-              //       Icons.house_sharp,
-              //       color: Colors.white,
-              //       size: 28,
-              //     ),
-              //     Text(
-              //       "Enter Covid Center Info",
-              //       style: const TextStyle(color: Colors.white, fontSize: 28),
-              //     ),
-              //   ],
-              // ),
+
               Card(
                 child: Container(
                   decoration: BoxDecoration(
@@ -159,12 +141,13 @@ class _PatientRegisterState extends State<PatientRegister> {
                                 borderRadius: BorderRadius.circular(15)),
                             labelText: "City"),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      Wrap(
+                  direction: Axis.horizontal,
                         children: [
                           Text('Date Of Birth'),
                           OutlinedButton.icon(
                               onPressed: () async {
+                                FocusScope.of(context).unfocus();
                                 DateTime dateOfBirthDateTime =
                                     await showDatePicker(
                                         context: context,
@@ -229,9 +212,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                                     setState(() {
                                       adhaarImage = File(pickedImage.path);
                                     });
-                                    // showDialog(context: context, builder: (_){
-                                    //   return AlertDialog(content: Image.file(image),);
-                                    // });
+
                                   },
                                   child: Text(adhaarImage == null
                                       ? 'Adhaar'
@@ -319,13 +300,14 @@ class _PatientRegisterState extends State<PatientRegister> {
                             "email": email.text,
                             "is_corona_positive": isCoronaPositive,
                             "mobile_number": mobileNo.text,
-                            "isApproved" : false,
+
+                            "status" : "Not booked any bed",
                             "password": password.text
                           });
                           setState(() {
                             isUploading = false;
                           });
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text,docRef.id)));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text,docRef.id)));
                         },
                         label: Row(
                           children: [
@@ -340,22 +322,6 @@ class _PatientRegisterState extends State<PatientRegister> {
                 ),
               ),
 
-              // Expanded(
-              //   child: GridView.builder(
-              //     itemCount: countOfBeds,
-              //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //         crossAxisCount: 2),
-              //     itemBuilder: (context, index) {
-              //       return Container(
-              //         margin: EdgeInsets.all(10),
-              //         width: 200,
-              //         height: 300,
-              //         child: Center(child: Text((index + 1).toString())),
-              //         color: index.isOdd ? Colors.blue : Colors.red,
-              //       );
-              //     },
-              //   ),
-              // )
             ],
           ),
         ),
