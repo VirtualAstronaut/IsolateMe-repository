@@ -73,9 +73,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
           child: Column(
-
             children: [
-
               Card(
                 child: Container(
                   decoration: BoxDecoration(
@@ -141,10 +139,15 @@ class _PatientRegisterState extends State<PatientRegister> {
                                 borderRadius: BorderRadius.circular(15)),
                             labelText: "City"),
                       ),
+                      const SizedBox(height: 10,),
                       Wrap(
                   direction: Axis.horizontal,
+                        alignment: WrapAlignment.center,
+                        runAlignment: WrapAlignment.spaceAround,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           Text('Date Of Birth'),
+                          const SizedBox(width: 10,),
                           OutlinedButton.icon(
                               onPressed: () async {
                                 FocusScope.of(context).unfocus();
@@ -167,6 +170,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                                   : 'Picked Date\n${dateOfBirth.toString().substring(0, 10)}'))
                         ],
                       ),
+                      const SizedBox(height: 10,),
                       Text('Are you diagnosed with Corona Positive ?'),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -249,7 +253,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                                       rtpcrImage = File(pickedImage.path);
                                     });
                                   },
-                                  child: Text('RTPCR Test'),
+                                  child: Text(rtpcrImage == null ? 'RTPCR Test' : 'RTPCR Selected'),
                                 ),
                                 isCoronaPositive
                                     ? Checkbox(
@@ -279,7 +283,7 @@ class _PatientRegisterState extends State<PatientRegister> {
                             shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5)))),
-                        icon: Icon(Icons.save),
+                        icon: Icon(Icons.app_registration),
                         onPressed: () async {
                           setState(() {
                             isUploading = true;
@@ -293,21 +297,20 @@ class _PatientRegisterState extends State<PatientRegister> {
                           await docRef.set({
                             "docId" : docRef.id,
                             "full_name": fullName.text,
-                            "city": city.text,
+                            "city": city.text[0].toUpperCase() + city.text.substring(1),
                             "adhaar_image_url" :  adhaarUrl,
                             "rtpcr_image_url" :  rtpcrUrl,
                             "date_of_birth": dateOfBirth,
                             "email": email.text,
                             "is_corona_positive": isCoronaPositive,
                             "mobile_number": mobileNo.text,
-
                             "status" : "Not booked any bed",
                             "password": password.text
                           });
                           setState(() {
                             isUploading = false;
                           });
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text,docRef.id)));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen(city.text[0].toUpperCase() + city.text.substring(1),docRef.id)));
                         },
                         label: Row(
                           children: [

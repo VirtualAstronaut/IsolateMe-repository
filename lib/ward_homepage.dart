@@ -8,7 +8,6 @@ class WardHomePage extends StatefulWidget {
   final String docId;
 
   WardHomePage(this.docId);
-
   @override
   _WardHomePageState createState() => _WardHomePageState();
 }
@@ -18,10 +17,25 @@ class _WardHomePageState extends State<WardHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(brightness: Brightness.dark,
-        actions: [IconButton(tooltip: "Logout",icon: Icon(Icons.logout), onPressed: (){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginScreen()));
-        })],
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        actions: [
+          IconButton(
+              tooltip: "Refresh",
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                setState(() {
+
+                });
+              }),
+          IconButton(
+              tooltip: "Logout",
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (_) => LoginScreen()));
+              })
+        ],
         title: Text(
           "Covid Center Admin",
           style: const TextStyle(
@@ -116,11 +130,29 @@ class _WardHomePageState extends State<WardHomePage> {
                                 )
                               ],
                             ),
+                            Divider(
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Type Of Bed",
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 20),
+                                ),
+                                Text(
+                                  listOfDocs.first["requests"][index]
+                                      ["bed_type"],
+                                  style: infoSTyle,
+                                )
+                              ],
+                            ),
                             Wrap(
                               crossAxisAlignment: WrapCrossAlignment.center,
                               direction: Axis.horizontal,
                               alignment: WrapAlignment.center,
-runAlignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
                               children: [
                                 OutlinedButton(
                                     style: ButtonStyle(
@@ -128,7 +160,6 @@ runAlignment: WrapAlignment.center,
                                             MaterialStateProperty.all(
                                                 Colors.white)),
                                     onPressed: () async {
-
                                       showDialog(
                                         context: context,
                                         builder: (context) {
@@ -174,7 +205,9 @@ runAlignment: WrapAlignment.center,
                                       );
                                     },
                                     child: Text('Adhaar')),
-                                const SizedBox(width: 10,),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 OutlinedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -226,7 +259,9 @@ runAlignment: WrapAlignment.center,
                                       );
                                     },
                                     child: Text('RTPCR')),
-                                const SizedBox(width: 10,),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 OutlinedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
@@ -237,7 +272,51 @@ runAlignment: WrapAlignment.center,
                                           .collection('patients')
                                           .doc(listOfDocs.first["requests"]
                                               [index]["docId"])
-                                          .update( {"status" : "Approved, Come With Docs"});
+                                          .update({
+                                        "status": "Approved, Come With Docs"
+                                      });
+                                      String bedType = listOfDocs
+                                          .first["requests"][index]["bed_type"];
+                                      String fieldValue =
+                                          bedType != "Normal Bed"
+                                              ? bedType != "Ventilator Bed"
+                                                  ? "available_oxygen_beds"
+                                                  : "available_ventilator_beds"
+                                              : "available_beds";
+
+                                      bool isOxygenOrVentilator =
+                                          bedType == "Normal Bed"
+                                              ? false
+                                              : true;
+                                      DocumentSnapshot wardInfo =
+                                          await firebaseFirestore
+                                              .collection('wards')
+                                              .doc(widget.docId)
+                                              .get();
+                                      if (isOxygenOrVentilator)
+                                        await firebaseFirestore
+                                            .collection('wards')
+                                            .doc(widget.docId)
+                                            .update(
+                                          {
+                                            "available_beds": (int.parse(
+                                                    wardInfo["available_beds"]) -
+                                                1).toString(),
+                                            fieldValue: (int.parse(
+                                                    wardInfo[fieldValue].toString()) -
+                                                1).toString()
+                                          },
+                                        );
+                                      else {
+                                        await firebaseFirestore
+                                            .collection('wards')
+                                            .doc(widget.docId)
+                                            .update({
+                                          "available_beds":( int.parse(
+                                                  wardInfo["available_beds"]) -
+                                              1).toString()
+                                        });
+                                      }
                                       await firebaseFirestore
                                           .collection("wards")
                                           .doc(widget.docId)
@@ -249,15 +328,20 @@ runAlignment: WrapAlignment.center,
                                       setState(() {});
                                     },
                                     child: Text("Approve")),
+                                const SizedBox(
+                                  width: 10,
+                                ),
                                 OutlinedButton(
                                     style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all(
                                                 Colors.white)),
                                     onPressed: () async {
-                                      await firebaseFirestore.collection('patients').doc(listOfDocs.first["requests"]
-                                      [index]["docId"]).update(
-                                          {"status" : "Rejected"});
+                                      await firebaseFirestore
+                                          .collection('patients')
+                                          .doc(listOfDocs.first["requests"]
+                                              [index]["docId"])
+                                          .update({"status": "Rejected, Please apply somewhere else"});
                                       await firebaseFirestore
                                           .collection("wards")
                                           .doc(widget.docId)

@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 
     <application
-        android:label="covisolate0"
+        android:label="IsolateMe!"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

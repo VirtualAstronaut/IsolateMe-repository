@@ -123,14 +123,17 @@ class _HomeScreenState extends State<HomeScreen> {
             future: getData(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Expanded(child: Center(child: CircularProgressIndicator()));
               } else {
+                if (snapshot.data.docs.length < 1)
+                  return Expanded(child: Center(child: Text('No Wards Registered in App in Your City',style: TextStyle(fontSize: 18),),));
                 return Expanded(
                   child: ListView.builder(
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () async {
+                          print(snapshot.data.docs[index].data());
                           await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -144,8 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ["available_beds"],
                                       availableOxygenBeds: snapshot.data.docs[index]
                                           ["available_oxygen_beds"],
-                                      availableVentilators: snapshot.data
-                                          .docs[index]["available_ventilators"],
                                       type: snapshot.data.docs[index]["type"],
                                       ventilatorBeds: snapshot.data.docs[index]
                                           ["ventilator_beds"],

@@ -44,6 +44,10 @@ class WardInfoScreen extends StatefulWidget {
 class _WardInfoScreenState extends State<WardInfoScreen> {
   bool isApplied =false;
 
+  String typeOfBed = "Normal bed";
+
+  String bedTypeValue = "Normal Bed";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +84,7 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                   height: 10,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
                       child: Text(
@@ -88,12 +92,10 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                         style: WardInfoScreen.infoSTyle,
                       ),
                     ),
-                    Expanded(child: Text(widget.address, style: WardInfoScreen.infoSTyle)),
+                    Expanded(child: Align(alignment: Alignment.centerRight,child: Text(widget.address, style: WardInfoScreen.infoSTyle))),
                   ],
                 ),
-                Divider(
-                  color: Colors.white,
-                ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -104,9 +106,7 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                     Text(widget.city, style: WardInfoScreen.infoSTyle),
                   ],
                 ),
-                Divider(
-                  color: Colors.white,
-                ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -117,9 +117,7 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                     Text(widget.type, style: WardInfoScreen.infoSTyle),
                   ],
                 ),
-                Divider(
-                  color: Colors.white,
-                ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -137,53 +135,11 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Oxygen Beds : ',
-                      style: WardInfoScreen.infoSTyle,
-                    ),
-                    Text(widget.oxygenBeds, style: WardInfoScreen.infoSTyle),
-                  ],
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Ventilator Beds : ',
-                      style: WardInfoScreen.infoSTyle,
-                    ),
-                    Text(widget.ventilatorBeds, style: WardInfoScreen.infoSTyle),
-                  ],
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
                       'Total Beds : ',
                       style: WardInfoScreen.infoSTyle,
                     ),
                     Text(widget.totalBeds, style: WardInfoScreen.infoSTyle),
                   ],
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Available Oxygen Beds : ',
-                      style: WardInfoScreen.infoSTyle,
-                    ),
-                    Text(widget.availableOxygenBeds, style: WardInfoScreen.infoSTyle),
-                  ],
-                ),
-                Divider(
-                  color: Colors.white,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,18 +154,40 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                 Divider(
                   color: Colors.white,
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Available Ventilators : ',
+                      'Oxygen Beds : ',
                       style: WardInfoScreen.infoSTyle,
                     ),
-                    Text(widget.availableVentilators, style: WardInfoScreen.infoSTyle),
+                    Text(widget.oxygenBeds, style: WardInfoScreen.infoSTyle),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Available Oxygen Beds :',
+                      style: WardInfoScreen.infoSTyle,
+                    ),
+                    Text(widget.availableOxygenBeds, style: WardInfoScreen.infoSTyle),
                   ],
                 ),
                 Divider(
                   color: Colors.white,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Ventilator Beds : ',
+                      style: WardInfoScreen.infoSTyle,
+                    ),
+                    Text(widget.ventilatorBeds, style: WardInfoScreen.infoSTyle),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,6 +198,9 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                     ),
                     Text(widget.availableVentilatorBeds, style: WardInfoScreen.infoSTyle),
                   ],
+                ),
+                Divider(
+                  color: Colors.white,
                 ),
                 SizedBox(
                   height: 20,
@@ -242,10 +223,70 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                     SizedBox(
                       width: 25,
                     ),
+
+                  ],
+                ),
+                Theme(
+                  data: ThemeData(unselectedWidgetColor: Colors.white,),
+                  child: Wrap(
+
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Normal Bed',style:const TextStyle(color: Colors.white),),
+                          Radio(
+                            activeColor: Colors.white,
+                              value: "Normal Bed",
+                              groupValue: bedTypeValue,
+                              onChanged: (val) {
+                                setState(() {
+                                  bedTypeValue = val;
+                                });
+                              }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Oxygen Bed',style:const TextStyle(color: Colors.white),),
+                          Radio(
+                              activeColor: Colors.white,
+                              value: "Oxygen Bed",
+                              groupValue: bedTypeValue,
+                              onChanged: (val) {
+                                setState(() {
+                                  bedTypeValue = val;
+                                });
+                              }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Ventilator Bed',style:const TextStyle(color: Colors.white),),
+                          Radio(
+                              value: "Ventilator Bed",
+                              activeColor: Colors.white,
+                              groupValue: bedTypeValue,
+                              onChanged: (val) {
+                                setState(() {
+                                  bedTypeValue = val;
+                                });
+                              }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
                     OutlinedButton.icon(
                         style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all(Colors.white)),
+                            MaterialStateProperty.all(Colors.white)),
                         onPressed: () async {
                           QuerySnapshot querySnap = await firebaseFirestore
                               .collection("patients")
@@ -254,21 +295,23 @@ class _WardInfoScreenState extends State<WardInfoScreen> {
                           print(widget.patientDocId);
                           await firebaseFirestore.collection('patients').doc(widget.patientDocId).update(
                               {"status" : "Requested for Bed"});
+                          Map patientData = querySnap.docs.first.data();
+                          patientData["bed_type"] = bedTypeValue;
                           await firebaseFirestore
                               .collection("wards")
                               .doc(widget.docId)
                               .update({
                             "requests": FieldValue.arrayUnion(
-                                [querySnap.docs.first.data()])
+                                [patientData])
                           });
                           setState(() {
                             isApplied = true;
                           });
                         },
                         icon: Icon(isApplied ? Icons.check : Icons.app_registration),
-                        label: Text(isApplied ? 'Applied' : 'Apply'))
+                        label: Text(isApplied ?  'Registered!' :'Register for Bed')),
                   ],
-                ),
+                )
               ],
             ),
           ),

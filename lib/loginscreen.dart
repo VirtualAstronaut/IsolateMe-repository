@@ -6,6 +6,7 @@ import 'package:covisolate0/patient_register.dart';
 import 'package:covisolate0/ward_homepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -95,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 })
                           ],
                         ),
+
                         OutlinedButton.icon(
                             style: ButtonStyle(
                                 backgroundColor:
@@ -134,9 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) => isCovidLogin ? WardHomePage(querySnapshot
-                                              .docs.first["docId"]) :HomeScreen(
+                                              .docs.first["docId"]) : HomeScreen(
                                               querySnapshot
-                                                  .docs.first["city"],querySnapshot
+                                                  .docs.first["city"][0].toUpperCase() +  querySnapshot
+                                                  .docs.first["city"].substring(1),querySnapshot
                                               .docs.first["docId"]))
 
                                   );
